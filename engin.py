@@ -2,13 +2,13 @@
 
 import torch
 from tqdm.auto import tqdm
+from utils import acc_fn
 
 
 def train_step(model: torch.nn.Module,
                train_dataloader: torch.utils.data.DataLoader,
                optimizer: torch.optim,
                loss_fn: torch.nn,
-               acc_fn,
                device: torch.device):
     model.train()
 
@@ -17,8 +17,8 @@ def train_step(model: torch.nn.Module,
     for X, y in train_dataloader:
         X, y = X.to(device), y.to(device)
         pred = model(X)
-        loss = loss_fn(pred, y).item()
-        train_loss += loss
+        loss = loss_fn(pred, y)
+        train_loss += loss.item()
         train_acc += acc_fn(pred.argmax(dim=1), y)
         optimizer.zero_grad()
         loss.backward()
@@ -33,7 +33,6 @@ def train_step(model: torch.nn.Module,
 def valid_step(model: torch.nn.Module,
                test_dataloader: torch.utils.data.DataLoader,
                loss_fn: torch.nn,
-               acc_fn,
                device: torch.device):
     model.eval()
 
@@ -57,7 +56,6 @@ def train(model: torch.nn.Module,
           test_dataloader: torch.utils.data.DataLoader,
           optimizer: torch.optim,
           loss_fn: torch.nn,
-          acc_fn,
           epochs: int,
           device: torch.device):
     result = {'train loss': [],
@@ -71,16 +69,16 @@ def train(model: torch.nn.Module,
                                            train_dataloader=train_dataloader,
                                            optimizer=optimizer,
                                            loss_fn=loss_fn,
-                                           acc_fn=acc_fn,
                                            device=device)
+
         valid_loss, valid_acc = valid_step(model=model,
                                            test_dataloader=test_dataloader,
                                            loss_fn=loss_fn,
-                                           acc_fn=acc_fn,
                                            device=device)
 
         print(
-            f"training loss: {train_loss:.5f} | training acc: {train_acc:.3f}% | validation loss: {valid_loss:.5f} | validation acc: {valid_acc:.3f}%")
+            f"training loss: {train_loss:.5f} | training acc: {train_acc:.3f}% | validation loss: {valid_loss:.5f} | "
+            f"validation acc: {valid_acc:.3f}%")
 
         result['train loss'].append(train_loss)
         result['train acc'].append(train_acc)
