@@ -1,5 +1,5 @@
 import torch
-from path import Path
+from pathlib import Path
 import matplotlib.pyplot as plt
 
 
