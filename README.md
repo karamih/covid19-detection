@@ -16,3 +16,8 @@
 
 ### results of the fine-tuning model that exist in saved_model dir show in this picture:<br>
 <img src='covid19_resnet18.png'>
+
+<hr>
+
+### UserInterface:<br>
+<img src='ui.png'>
