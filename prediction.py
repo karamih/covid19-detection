@@ -3,11 +3,12 @@ from model_builder import model
 from PIL import Image
 from torchvision import transforms
 
+torch.manual_seed(42)
+co19_model = model(out_features=2)
+co19_model.load_state_dict(torch.load('saved_model/covid19_detector.pth'))
+
 
 def predict(img):
-    torch.manual_seed(42)
-    co19_model = model(out_features=2)
-    co19_model.load_state_dict(torch.load('saved_model/covid19_detector.pth'))
     co19_model.eval()
 
     classes = ['covid', 'normal']
